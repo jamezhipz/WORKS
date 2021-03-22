@@ -27,7 +27,7 @@ Parameters:
     Description: Please enter the IP range (CIDR notation) for the private subnet in the second Availability Zone
     Type: String
     Default: 10.0.2.0/24
-
+# Create VPC
 Resources:
   VPC:
     Type: AWS::EC2::VPC
@@ -37,20 +37,20 @@ Resources:
       Tags:
         - Key: Name
           Value: !Ref EnvironmentName
-
+# Create InternetGateway
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
         - Key: Name
           Value: !Ref EnvironmentName
-
+# Map InternetGateway to VPC
   InternetGatewayAttachment:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       InternetGatewayId: !Ref InternetGateway
       VpcId: !Ref VPC
-
+# Create PublicSubnet1
   PublicSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
@@ -61,7 +61,7 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName} Public Subnet (AZ1)
-
+# Create PublicSubnet2
   PublicSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
@@ -72,7 +72,7 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName} Public Subnet (AZ2)
-
+# Create PrivateSubnet1
   PrivateSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
@@ -83,7 +83,7 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName} Private Subnet (AZ1)
-
+# Create PrivateSubnet2
   PrivateSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
@@ -94,31 +94,31 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
-
+# Create EIP1
   NatGateway1EIP:
     Type: AWS::EC2::EIP
     DependsOn: InternetGatewayAttachment
     Properties:
       Domain: vpc
-
+# Create EIP2
   NatGateway2EIP:
     Type: AWS::EC2::EIP
     DependsOn: InternetGatewayAttachment
     Properties:
       Domain: vpc
-
+# Create NatGateway1 and map with EIP1 for Publicsubnet1
   NatGateway1:
     Type: AWS::EC2::NatGateway
     Properties:
       AllocationId: !GetAtt NatGateway1EIP.AllocationId
       SubnetId: !Ref PublicSubnet1
-
+# Create NatGateway1 and map with EIP1 for Publicsubnet1
   NatGateway2:
     Type: AWS::EC2::NatGateway
     Properties:
       AllocationId: !GetAtt NatGateway2EIP.AllocationId
       SubnetId: !Ref PublicSubnet2
-
+# Create Public RouteTable
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -126,7 +126,7 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName} Public Routes
-
+# Create Default Route
   DefaultPublicRoute:
     Type: AWS::EC2::Route
     DependsOn: InternetGatewayAttachment
@@ -134,19 +134,19 @@ Resources:
       RouteTableId: !Ref PublicRouteTable
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
-
+# Map RouteTable to Publicsubnet1
   PublicSubnet1RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref PublicRouteTable
       SubnetId: !Ref PublicSubnet1
-
+# Map RouteTable to Publicsubnet2
   PublicSubnet2RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref PublicRouteTable
       SubnetId: !Ref PublicSubnet2
-
+# Create Private RouteTable1
   PrivateRouteTable1:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -154,20 +154,20 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName} Private Routes (AZ1)
-
+# Create Default Route for Private RouteTable1 and NAT outgoing with NatGateway1
   DefaultPrivateRoute1:
     Type: AWS::EC2::Route
     Properties:
       RouteTableId: !Ref PrivateRouteTable1
       DestinationCidrBlock: 0.0.0.0/0
       NatGatewayId: !Ref NatGateway1
-
+# Map Private RouteTable1 to PrivateSubnet1
   PrivateSubnet1RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref PrivateRouteTable1
       SubnetId: !Ref PrivateSubnet1
-
+# Create Private RouteTable2
   PrivateRouteTable2:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -175,14 +175,14 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName} Private Routes (AZ2)
-
+# Create Default Route for Private RouteTable2 and NAT outgoing with NatGateway2
   DefaultPrivateRoute2:
     Type: AWS::EC2::Route
     Properties:
       RouteTableId: !Ref PrivateRouteTable2
       DestinationCidrBlock: 0.0.0.0/0
       NatGatewayId: !Ref NatGateway2
-
+# Map Private RouteTable1 to PrivateSubnet1
   PrivateSubnet2RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
