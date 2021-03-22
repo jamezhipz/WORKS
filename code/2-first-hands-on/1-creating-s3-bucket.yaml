@@ -1,7 +1,0 @@
----
-Resources:
-  MyS3Bucket:
-    Type: "AWS::S3::Bucket"
-    Properties:
-      BucketName: 0-test-scg
-      AccessControl: PublicRead
