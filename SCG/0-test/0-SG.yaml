@@ -1,11 +1,11 @@
 Parameters:
   EnvironmentName:
-    Description: Create name
+    Description: Create Environment name
     Type: String
 
   VPC:
     Type: AWS::EC2::VPC::Id
-    Description: Choose which VPC
+    Description: Choose VPC
 
 Resources:
   ECSHostSecurityGroup:

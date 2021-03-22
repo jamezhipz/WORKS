@@ -112,7 +112,7 @@ Resources:
     Properties:
       AllocationId: !GetAtt NatGateway1EIP.AllocationId
       SubnetId: !Ref PublicSubnet1
-# Create NatGateway1 and map with EIP1 for Publicsubnet1
+# Create NatGateway1 and map with EIP2 for Publicsubnet2
   NatGateway2:
     Type: AWS::EC2::NatGateway
     Properties:

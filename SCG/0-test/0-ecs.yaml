@@ -23,13 +23,13 @@ Parameters:
     Description: ECS Image
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /aws/service/ecs/optimized-ami/amazon-linux/recommended/image_id
-
+# Create ECS Cluster
 Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
       ClusterName: !Ref ServiceName
-
+# Create ECS ASG
   ECSAutoScalingGroup:
     DependsOn: ECSCluster
     Type: AWS::AutoScaling::AutoScalingGroup
@@ -67,6 +67,7 @@ Resources:
       SecurityGroups:
         - !Ref SecurityGroup
       IamInstanceProfile: !Ref ECSInstanceProfile
+# Install Cloudwatch agent
       UserData:
         "Fn::Base64": !Sub |
           #!/bin/bash
@@ -76,7 +77,7 @@ Resources:
           /opt/aws/bin/cfn-init -v --region ${AWS::Region} --stack ${AWS::StackName} --resource ECSLaunchConfiguration
           /opt/aws/bin/cfn-signal -e $? --region ${AWS::Region} --stack ${AWS::StackName} --resource ECSAutoScalingGroup
           /usr/bin/enable-ec2-spot-hibernation
-
+# Configure CloudWatch agent
     Metadata:
       AWS::CloudFormation::Init:
         config:
@@ -112,7 +113,7 @@ Resources:
                 files:
                   - /etc/cfn/cfn-hup.conf
                   - /etc/cfn/hooks.d/cfn-auto-reloader.conf
-
+# Create IAM role for ECS
   ECSRole:
     Type: AWS::IAM::Role
     Properties:
@@ -159,7 +160,7 @@ Resources:
       Path: /
       Roles:
         - !Ref ECSRole
-
+# Create IAM role for ECS ASG
   ECSServiceAutoScalingRole:
     Type: AWS::IAM::Role
     Properties:
