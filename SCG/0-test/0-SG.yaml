@@ -6,7 +6,7 @@ Parameters:
   VPC:
     Type: AWS::EC2::VPC::Id
     Description: Choose VPC
-
+# Create SG for ECS
 Resources:
   ECSHostSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -20,6 +20,7 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName}-ECS-Hosts
+# Create SG for LB
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
