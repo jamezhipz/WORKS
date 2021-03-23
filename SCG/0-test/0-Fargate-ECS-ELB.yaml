@@ -66,7 +66,7 @@ Parameters:
     Type: Number
     Default: 50
     Description: Enter CPU target Utilization [Percent]
-    
+# Create ECS Cluster Name    
 Resources:
   Cluster:
     Type: AWS::ECS::Cluster
