@@ -2,13 +2,13 @@ Parameters:
   EnvironmentName:
     Description: Create Environment name
     Type: String
-
   VPC:
     Type: AWS::EC2::VPC::Id
     Description: Choose VPC
+
 # Create SG for ECS
 Resources:
-  ECSHostSecurityGroup:
+  ContainerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       VpcId: !Ref VPC

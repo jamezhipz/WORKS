@@ -28,7 +28,6 @@ Parameters:
     Description: Input Certificate ACM
   Image:
     Type: String
-    # Update with the Docker image. "You can use images in the Docker Hub registry or specify other repositories (repository-url/image:tag)."
     Default: 123456789012.dkr.ecr.region.amazonaws.com/image:tag
     Description: Input Container Image Registry [repository-url/image:tag]
   ContainerPort:
@@ -290,7 +289,7 @@ Resources:
           PredefinedMetricType: ECSServiceAverageCPUUtilization
         ScaleInCooldown: 10
         ScaleOutCooldown: 10
-        # Keep things at or lower than 50% CPU utilization, for example
+        # Keep ECS at or lower than CPUPolicyTargetValue 
         TargetValue: !Ref CPUPolicyTargetValue
         
 Outputs:
